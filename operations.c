@@ -43,7 +43,7 @@ void rmItem(product **l, product *node) {
     if(ptr == NULL){
         printf("Product Not Found\n");
     }else if (strcmp(ptr->name, node->name) == 0) {
-        prev->next = NULL;
+        prev->next = ptr->next;
     }
 }
 
@@ -77,7 +77,7 @@ int loadData(char *filename, product **list) {
     const char *delimiter = "|";
     char *data = strtok(load_data, delimiter);
     int i = 0;
-    while (data != NULL && data != "\n_\023") {
+    while (data != NULL) {
         strcpy(Temp->name, data);
         data = strtok(NULL, delimiter);
         Temp->quantity_value = (float) atof(data);
@@ -103,17 +103,23 @@ int loadData(char *filename, product **list) {
 int saveData(char *filename, product **l) {
     FILE *out = fopen(filename, "w+");
     product * ptr = l[0];
-    char * data[100*N];
+    fwrite("",sizeof(""),1,out);
+    char * data = calloc((100*N),sizeof(char));
     while (ptr != NULL) {
         char text[100];
-        sprintf(text, "|%s|%f|%s|%f|%s", ptr->name, ptr->quantity_value, ptr->quantity_unit, ptr->price_value,
-                ptr->price_unit);
+        if(ptr->next != NULL) {
+            sprintf(text, "%s|%f|%s|%f|%s|", ptr->name, ptr->quantity_value, ptr->quantity_unit, ptr->price_value,
+                    ptr->price_unit);
+        }else{
+            sprintf(text, "%s|%f|%s|%f|%s", ptr->name, ptr->quantity_value, ptr->quantity_unit, ptr->price_value,
+                    ptr->price_unit);
+        }
         strcat(data, text);
         ptr = ptr->next;
     }
-    char * output[100*N];
-    strncpy(output,data,strlen(data-1));
-    fwrite(data, sizeof(char), strlen(data), out);
+    char * output = malloc(sizeof(char) *(N*100));
+    strncpy(output,data,strlen(data)-1);
+    fwrite(output, sizeof(char), strlen(data), out);
     fclose(out);
 }
 
@@ -121,14 +127,17 @@ int saveData(char *filename, product **l) {
 float purchase(product **l, char p[], float q) {
     product *ptr;
     ptr = l[0];
-    while (strcmp(ptr->name, p) != 0) {
-        ptr = ptr->next;
+    while (ptr != NULL) {
+        if (strcmp(ptr->name, p) != 0) {
+            ptr = ptr->next;
+        }else{
+            break;
+        }
     }
     if (ptr == NULL) {
     printf("Product Not Found\n");
         return 0;
-    }
-    if(strcmp(ptr->name,p) == 0){
+    }else if(strcmp(ptr->name,p) == 0){
         if(ptr->quantity_value < q){
             q = ptr->quantity_value;
         }
@@ -141,13 +150,16 @@ float purchase(product **l, char p[], float q) {
 void check_price(product **l, char p[]) {
     product *ptr;
     ptr = l[0];
-    while (strcmp(ptr->name, p) != 0 && ptr != NULL) {
-        ptr = ptr->next;
+    while (ptr != NULL) {
+        if (strcmp(ptr->name, p) != 0) {
+            ptr = ptr->next;
+        }else{
+            break;
+        }
     }
-    if (ptr != NULL) {
+    if (ptr == NULL) {
         printf("Product Not Found\n");
-    }
-    if(strcmp(ptr->name,p) == 0){
+    }else if(strcmp(ptr->name,p) == 0){
         printf("%s: %f %s \n",ptr->name,ptr->price_value,ptr->price_unit);
     }
 }
@@ -156,13 +168,16 @@ void check_price(product **l, char p[]) {
 void findItem(product **l, char p[]) {
     product *ptr;
     ptr = l[0];
-    while (strcmp(ptr->name, p) != 0 && ptr != NULL) {
-        ptr = ptr->next;
+    while (ptr != NULL) {
+        if (strcmp(ptr->name, p) != 0) {
+            ptr = ptr->next;
+        }else{
+            break;
+        }
     }
     if (ptr == NULL) {
-        printf("Product Not Found");
-    }
-    if(strcmp(ptr->name,p) == 0){
+        printf("Product Not Found \n");
+    }else if(strcmp(ptr->name,p) == 0){
         printf("%s: %f %s sold at %f %s \n", ptr->name, ptr->quantity_value, ptr->quantity_unit, ptr->price_value, ptr->price_unit);
     }
 }

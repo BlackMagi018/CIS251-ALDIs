@@ -55,7 +55,7 @@ int main() {
             char text[N];
             float buy;
             printf("What product would you like to buy\n");
-            scanf("%s",&text);
+            scanf("%s",text);
             printf("How much would you like to buy\n");
             scanf("%f",&buy);
             total += purchase(Inventory,text,buy);
