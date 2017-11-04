@@ -24,38 +24,41 @@ int main() {
     printf("=======================================================================\n");
 
     while (i != 8) {
-        printf("What do you want to do?");
+        printf("What do you want to do?\n");
         scanf("%d", &i);
 
         if (i == 1) {
             product  * node = (product *) malloc(sizeof(product));
             char text[25];
             float num;
-            printf("Product Name:");
+            printf("Product Name:\n");
             scanf("%s", node->name);
 
-            printf("How many %s will be added:", node->name);
+            printf("How many %s will be added:\n", node->name);
             scanf("%f", &node->quantity_value);
 
-            printf("What is one unit of %s called:", node->name);
+            printf("What is one unit of %s called:\n", node->name);
             scanf("%s", node->quantity_unit);
 
-            printf("What is the price of %s:", node->name);
+            printf("What is the price of %s:\n", node->name);
             scanf("%f", &node->price_value);
 
-            printf("What is the price unit of %s called:", node->name);
+            printf("What is the price unit of %s called:\n", node->name);
             scanf("%s", node->price_unit);
 
             node->next = NULL;
 
             insert(Inventory, node);
-            i == 0;
+            fflush(stdin);
         }
         if (i == 2) {
             char text[N];
+            float buy;
             printf("What product would you like to buy\n");
             scanf("%s",&text);
-            total += purchase(Inventory,text,total);
+            printf("How much would you like to buy\n");
+            scanf("%f",&buy);
+            total += purchase(Inventory,text,buy);
 
         }
         if (i == 3) {
